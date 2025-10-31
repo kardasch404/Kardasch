@@ -20,3 +20,7 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# API Documentation
+API.md
+Kardasch.postman_collection.json
