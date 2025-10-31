@@ -15,11 +15,14 @@ const startServer = async () => {
             if (token) {
                 try {
                     const decoded = JWTUtil.verifyAccessToken(token);
+                    console.log('Context:', { userId: decoded.userId, role: decoded.role });
                     return { userId: decoded.userId, role: decoded.role };
                 } catch (error) {
+                    console.log('Token verification error:', error);
                     return {};
                 }
             }
+            console.log('No token provided');
             return {};
         }
     });

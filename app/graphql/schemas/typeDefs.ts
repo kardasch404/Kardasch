@@ -64,9 +64,18 @@ export const typeDefs = `#graphql
     user: User!
   }
 
+  type Portfolio {
+    user: User!
+    educations: [Education!]!
+    experiences: [Experience!]!
+    projects: [Project!]!
+    competences: [Competence!]!
+    socials: [Social!]!
+  }
+
   type Query {
-    hello: String
     me: User
+    portfolio: Portfolio!
     educations: [Education!]!
     experiences: [Experience!]!
     projects: [Project!]!
