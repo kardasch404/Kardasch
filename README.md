@@ -251,8 +251,8 @@ npm run seed
 ```graphql
 mutation {
   login(
-    email: "kardachezakaria45@gmail.com"
-    password: "kardachezakaria45"
+    email: "zzzzzzzz@gmail.com"
+    password: "zzzzzzzz"
   ) {
     accessToken
     refreshToken
