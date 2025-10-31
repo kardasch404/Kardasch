@@ -8,7 +8,8 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "dev": "nodemon --watch 'app/**/*.ts' --exec 'ts-node' app/server.ts",
-    "lint": "eslint 'app/**/*.ts'"
+    "lint": "eslint 'app/**/*.ts'",
+    "seed": "ts-node app/scripts/seedAdmin.ts"
   },
   "repository": {
     "type": "git",
@@ -22,8 +23,10 @@
   },
   "homepage": "https://github.com/kardasch404/Kardasch#readme",
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/mongoose": "^5.11.96",
     "@types/node": "^24.9.2",
     "dotenv": "^17.2.3",
@@ -38,9 +41,11 @@
   },
   "dependencies": {
     "@apollo/server": "^5.1.0",
+    "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "graphql": "^16.11.0",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.2"
   }
 }

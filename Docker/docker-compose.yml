@@ -9,11 +9,16 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+      - PORT=3000
       - MONGODB_URI=mongodb://mongo:27017/kardasch
+      - GRAPHQL_PATH=/graphql
+      - JWT_ACCESS_SECRET=your-access-secret-key-change-in-production
+      - JWT_REFRESH_SECRET=your-refresh-secret-key-change-in-production
+      - JWT_ACCESS_EXPIRY=15m
+      - JWT_REFRESH_EXPIRY=7d
     depends_on:
       - mongo
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
 
   mongo:
     image: mongo:7
@@ -21,6 +26,7 @@ services:
       - "27018:27017"
     volumes:
       - mongo_data:/data/db
+    restart: unless-stopped
 
 volumes:
   mongo_data:
