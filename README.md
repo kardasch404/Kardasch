@@ -142,7 +142,7 @@ sequenceDiagram
 
 ## API Endpoints
 
-### 🔐 Authentication
+### Authentication
 
 | Mutation | Access | Description |
 |----------|--------|-------------|
@@ -150,14 +150,14 @@ sequenceDiagram
 | `refreshToken` | Public | Refresh access token |
 | `logout` | Auth | Revoke refresh token |
 
-### 👤 User
+### User
 
 | Query | Access | Description |
 |-------|--------|-------------|
 | `me` | Auth | Get current user |
 | `portfolio` | Auth | Get complete profile |
 
-### 📚 Education
+### Education
 
 | Operation | Access | Description |
 |-----------|--------|-------------|
@@ -166,7 +166,7 @@ sequenceDiagram
 | `updateEducation` | Admin | Update existing |
 | `deleteEducation` | Admin | Delete |
 
-### 💼 Experience
+### Experience
 
 | Operation | Access | Description |
 |-----------|--------|-------------|
@@ -175,7 +175,7 @@ sequenceDiagram
 | `updateExperience` | Admin | Update existing |
 | `deleteExperience` | Admin | Delete |
 
-### 🚀 Projects
+### Projects
 
 | Operation | Access | Description |
 |-----------|--------|-------------|
@@ -184,7 +184,7 @@ sequenceDiagram
 | `updateProject` | Admin | Update existing |
 | `deleteProject` | Admin | Delete |
 
-### 🎯 Competences
+### Competences
 
 | Operation | Access | Description |
 |-----------|--------|-------------|
@@ -193,7 +193,7 @@ sequenceDiagram
 | `updateCompetence` | Admin | Update existing |
 | `deleteCompetence` | Admin | Delete |
 
-### 🔗 Socials
+### Socials
 
 | Operation | Access | Description |
 |-----------|--------|-------------|
