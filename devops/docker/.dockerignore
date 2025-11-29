@@ -1,0 +1,10 @@
+node_modules
+dist
+build
+.git
+.github
+.husky
+test
+*.md
+.env*
+coverage
