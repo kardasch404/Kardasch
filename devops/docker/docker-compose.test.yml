@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ../..
+      dockerfile: devops/docker/Dockerfile.prod
+    environment:
+      - NODE_ENV=test
+      - MONGODB_URI=mongodb://mongo:27017/test
+      - REDIS_HOST=redis
+    depends_on:
+      - mongo
+      - redis
+    command: pnpm run test:e2e
+
+  mongo:
+    image: mongo:7
+    tmpfs: /data/db
+
+  redis:
+    image: redis:7-alpine
