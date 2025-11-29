@@ -1,0 +1,15 @@
+name: CD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Docker Image
+        run: docker build -f devops/docker/Dockerfile.prod -t app:${{ github.sha }} .
+      - name: Deploy to K8s
+        run: kubectl apply -f devops/kubernetes/
