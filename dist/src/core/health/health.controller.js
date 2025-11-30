@@ -11,9 +11,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HealthController = void 0;
 const common_1 = require("@nestjs/common");
+const health_service_1 = require("./health.service");
 let HealthController = class HealthController {
+    healthService;
+    constructor(healthService) {
+        this.healthService = healthService;
+    }
     check() {
-        return { status: 'ok' };
+        return this.healthService.check();
     }
 };
 exports.HealthController = HealthController;
@@ -24,6 +29,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], HealthController.prototype, "check", null);
 exports.HealthController = HealthController = __decorate([
-    (0, common_1.Controller)('health')
+    (0, common_1.Controller)('health'),
+    __metadata("design:paramtypes", [health_service_1.HealthService])
 ], HealthController);
 //# sourceMappingURL=health.controller.js.map
