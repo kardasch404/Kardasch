@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './core/database/database.module';
 import { CacheModule } from './core/cache/cache.module';
 import { HealthModule } from './core/health/health.module';
+import { GraphqlModule } from './core/graphql/graphql.module';
 import { validationSchema } from './config/validation.schema';
 import appConfig from './config/app.config';
 import securityConfig from './config/security.config';
@@ -18,6 +19,7 @@ import securityConfig from './config/security.config';
     }),
     DatabaseModule,
     CacheModule,
+    GraphqlModule,
     HealthModule,
   ],
   controllers: [AppController],

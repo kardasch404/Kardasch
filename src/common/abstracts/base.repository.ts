@@ -1,4 +1,4 @@
-import { Model, Document, FilterQuery, UpdateQuery } from 'mongoose';
+import { Model, Document, UpdateQuery } from 'mongoose';
 
 export abstract class BaseRepository<T extends Document> {
   constructor(protected readonly model: Model<T>) {}
@@ -12,11 +12,11 @@ export abstract class BaseRepository<T extends Document> {
     return this.model.findById(id).exec();
   }
 
-  async findOne(filter: FilterQuery<T>): Promise<T | null> {
+  async findOne(filter: any): Promise<T | null> {
     return this.model.findOne(filter).exec();
   }
 
-  async findAll(filter: FilterQuery<T> = {}): Promise<T[]> {
+  async findAll(filter: any = {}): Promise<T[]> {
     return this.model.find(filter).exec();
   }
 
@@ -29,7 +29,7 @@ export abstract class BaseRepository<T extends Document> {
     return !!result;
   }
 
-  async count(filter: FilterQuery<T> = {}): Promise<number> {
+  async count(filter: any = {}): Promise<number> {
     return this.model.countDocuments(filter).exec();
   }
 }

@@ -10,11 +10,11 @@ export const validationSchema = Joi.object({
   
   REDIS_HOST: Joi.string().required(),
   REDIS_PORT: Joi.number().default(6379),
-  REDIS_PASSWORD: Joi.string().optional(),
+  REDIS_PASSWORD: Joi.string().allow('', null).optional(),
   REDIS_DB: Joi.number().default(0),
   
   JWT_SECRET: Joi.string().required(),
   JWT_EXPIRES_IN: Joi.string().default('1d'),
   
-  DEEPL_API_KEY: Joi.string().optional(),
+  DEEPL_API_KEY: Joi.string().allow('').optional(),
 });
