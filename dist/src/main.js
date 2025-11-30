@@ -42,10 +42,12 @@ const common_1 = require("@nestjs/common");
 const helmet_1 = __importDefault(require("helmet"));
 const mongoSanitize = __importStar(require("express-mongo-sanitize"));
 const hpp = __importStar(require("hpp"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const app_module_1 = require("./app.module");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     const configService = app.get(config_1.ConfigService);
+    app.use((0, cookie_parser_1.default)());
     app.use((0, helmet_1.default)({
         contentSecurityPolicy: configService.get('security.helmet.contentSecurityPolicy'),
         crossOriginEmbedderPolicy: false,

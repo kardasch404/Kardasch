@@ -4,11 +4,15 @@ import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import * as mongoSanitize from 'express-mongo-sanitize';
 import * as hpp from 'hpp';
+import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
+
+  // Cookie parser
+  app.use(cookieParser());
 
   // Security middleware
   app.use(helmet({
