@@ -12,6 +12,8 @@ import { ObservabilityModule } from './core/observability/observability.module';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { CustomThrottlerGuard } from './common/guards/throttler.guard';
 import { validationSchema } from './config/validation.schema';
+import { AuthModule } from './modules/auth/auth.module';
+import { UserModule } from './modules/user/user.module';
 import appConfig from './config/app.config';
 import securityConfig from './config/security.config';
 import observabilityConfig from './config/observability.config';
@@ -38,6 +40,8 @@ import observabilityConfig from './config/observability.config';
     CacheModule,
     GraphqlModule,
     HealthModule,
+    UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [

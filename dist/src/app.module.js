@@ -24,6 +24,8 @@ const observability_module_1 = require("./core/observability/observability.modul
 const logging_interceptor_1 = require("./common/interceptors/logging.interceptor");
 const throttler_guard_1 = require("./common/guards/throttler.guard");
 const validation_schema_1 = require("./config/validation.schema");
+const auth_module_1 = require("./modules/auth/auth.module");
+const user_module_1 = require("./modules/user/user.module");
 const app_config_1 = __importDefault(require("./config/app.config"));
 const security_config_1 = __importDefault(require("./config/security.config"));
 const observability_config_1 = __importDefault(require("./config/observability.config"));
@@ -53,6 +55,8 @@ exports.AppModule = AppModule = __decorate([
             cache_module_1.CacheModule,
             graphql_module_1.GraphqlModule,
             health_module_1.HealthModule,
+            user_module_1.UserModule,
+            auth_module_1.AuthModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [
