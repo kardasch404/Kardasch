@@ -22,6 +22,9 @@ export class Translation {
 
 @Schema({ timestamps: true })
 export class Project extends Document {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
   @Prop({ required: true })
   title: string;
 

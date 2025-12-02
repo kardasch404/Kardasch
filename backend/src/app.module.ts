@@ -12,10 +12,12 @@ import { ObservabilityModule } from './core/observability/observability.module';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { CustomThrottlerGuard } from './common/guards/throttler.guard';
 import { RateLimitGuard } from './common/guards/rate-limit.guard';
+import { CaptchaGuard } from './common/guards/captcha.guard';
 import { validationSchema } from './config/validation.schema';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { ProjectModule } from './modules/project/project.module';
+import { SecurityModule } from './modules/security/security.module';
 import appConfig from './config/app.config';
 import securityConfig from './config/security.config';
 import observabilityConfig from './config/observability.config';
@@ -43,6 +45,7 @@ import rateLimitConfig from './config/rate-limit.config';
     CacheModule,
     GraphqlModule,
     HealthModule,
+    SecurityModule,
     UserModule,
     AuthModule,
     ProjectModule,
@@ -61,6 +64,10 @@ import rateLimitConfig from './config/rate-limit.config';
     {
       provide: APP_GUARD,
       useClass: RateLimitGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: CaptchaGuard,
     },
   ],
 })

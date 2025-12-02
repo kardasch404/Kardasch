@@ -1,5 +1,6 @@
 import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
+import { CaptchaAction } from '../../../common/decorators/captcha.decorator';
 import { AuthService } from '../services/auth.service';
 import { RegisterDto } from '../dto/register.dto';
 import { LoginDto } from '../dto/login.dto';
@@ -15,6 +16,7 @@ export class AuthResolver {
   ) {}
 
   @Mutation(() => AuthResponseDto)
+  @CaptchaAction('register')
   async register(
     @Args('input') input: RegisterDto,
     @Context() context: any,
@@ -45,6 +47,7 @@ export class AuthResolver {
   }
 
   @Mutation(() => AuthResponseDto)
+  @CaptchaAction('login')
   async login(
     @Args('input') input: LoginDto,
     @Context() context: any,

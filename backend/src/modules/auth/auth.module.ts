@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthService } from './services/auth.service';
 import { PasswordService } from './services/password.service';
 import { TokenService } from './services/token.service';
+import { CaptchaService } from './services/captcha.service';
 import { AuthResolver } from './resolvers/auth.resolver';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
@@ -34,10 +35,11 @@ import { CacheModule } from '../../core/cache/cache.module';
     AuthService,
     PasswordService,
     TokenService,
+    CaptchaService,
     AuthResolver,
     JwtStrategy,
     JwtRefreshStrategy,
   ],
-  exports: [AuthService, PasswordService, TokenService],
+  exports: [AuthService, PasswordService, TokenService, CaptchaService],
 })
 export class AuthModule {}
