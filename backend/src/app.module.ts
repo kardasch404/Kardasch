@@ -11,6 +11,7 @@ import { GraphqlModule } from './core/graphql/graphql.module';
 import { ObservabilityModule } from './core/observability/observability.module';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { CustomThrottlerGuard } from './common/guards/throttler.guard';
+import { RateLimitGuard } from './common/guards/rate-limit.guard';
 import { validationSchema } from './config/validation.schema';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
@@ -18,13 +19,14 @@ import { ProjectModule } from './modules/project/project.module';
 import appConfig from './config/app.config';
 import securityConfig from './config/security.config';
 import observabilityConfig from './config/observability.config';
+import rateLimitConfig from './config/rate-limit.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema,
-      load: [appConfig, securityConfig, observabilityConfig],
+      load: [appConfig, securityConfig, observabilityConfig, rateLimitConfig],
     }),
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule],
@@ -55,6 +57,10 @@ import observabilityConfig from './config/observability.config';
     {
       provide: APP_GUARD,
       useClass: CustomThrottlerGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RateLimitGuard,
     },
   ],
 })
