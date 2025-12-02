@@ -77,11 +77,10 @@ export class AuditLog extends Document {
 export const AuditLogSchema = SchemaFactory.createForClass(AuditLog);
 
 // Make audit logs immutable
-AuditLogSchema.pre('save', function (next) {
+AuditLogSchema.pre('save', function () {
   if (!this.isNew) {
     throw new Error('Audit logs are immutable');
   }
-  next();
 });
 
 AuditLogSchema.index({ userId: 1, timestamp: -1 });
