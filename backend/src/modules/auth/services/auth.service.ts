@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException, BadRequestException, Inject } from '
 import { UserService } from '../../user/services/user.service';
 import { PasswordService } from './password.service';
 import { TokenService } from './token.service';
+import { BruteForceService } from './brute-force.service';
 import { RegisterDto } from '../dto/register.dto';
 import { LoginDto } from '../dto/login.dto';
 import { AuthResponseDto } from '../dto/auth-response.dto';
@@ -12,6 +13,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly passwordService: PasswordService,
     private readonly tokenService: TokenService,
+    private readonly bruteForceService: BruteForceService,
   ) {}
 
   async register(dto: RegisterDto, deviceFingerprint: string): Promise<AuthResponseDto> {
@@ -42,15 +44,23 @@ export class AuthService {
   }
 
   async login(dto: LoginDto, deviceFingerprint: string, ip: string): Promise<AuthResponseDto> {
+    // Check IP ban
+    await this.bruteForceService.checkIpBan(ip);
+
     const user = await this.userService.findByEmail(dto.identifier) ||
                  await this.userService.findByUsername(dto.identifier);
 
     if (!user) {
+      await this.bruteForceService.recordFailedAttempt(dto.identifier, ip);
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    // Check account lock
+    await this.bruteForceService.checkAccountLock(user.email);
+
     const isValid = await this.passwordService.verify(user.password, dto.password);
     if (!isValid) {
+      await this.bruteForceService.recordFailedAttempt(user.email, ip);
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -67,6 +77,9 @@ export class AuthService {
     );
 
     const userResponse = await this.userService.findById(user._id.toString());
+
+    // Reset attempts on successful login
+    await this.bruteForceService.recordSuccessfulLogin(user.email, ip);
 
     return { accessToken, user: userResponse };
   }

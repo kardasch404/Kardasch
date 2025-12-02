@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
+import type { Cache } from 'cache-manager';
 import { ProjectRepository } from '../repositories/project.repository';
 import { CreateProjectInput, UpdateProjectInput, SearchProjectInput } from '../dto/project.input';
 import { Project } from '../entities/project.entity';
@@ -97,9 +97,10 @@ export class ProjectService {
     const lastItem = items[items.length - 1];
     const nextCursor = hasMore && lastItem
       ? Buffer.from(JSON.stringify([lastItem.createdAt, lastItem.id])).toString('base64')
-      : null;
+      : undefined;
 
-    return { items, total: hits.total.value, cursor: nextCursor, hasMore };
+    const total = typeof hits.total === 'number' ? hits.total : hits.total?.value || 0;
+    return { items, total, cursor: nextCursor, hasMore };
   }
 
   async incrementViewCount(id: string): Promise<void> {
