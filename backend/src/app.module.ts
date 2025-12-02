@@ -14,6 +14,7 @@ import { CustomThrottlerGuard } from './common/guards/throttler.guard';
 import { validationSchema } from './config/validation.schema';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
+import { ProjectModule } from './modules/project/project.module';
 import appConfig from './config/app.config';
 import securityConfig from './config/security.config';
 import observabilityConfig from './config/observability.config';
@@ -42,6 +43,7 @@ import observabilityConfig from './config/observability.config';
     HealthModule,
     UserModule,
     AuthModule,
+    ProjectModule,
   ],
   controllers: [AppController],
   providers: [
