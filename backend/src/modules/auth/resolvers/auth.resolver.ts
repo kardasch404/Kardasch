@@ -86,8 +86,9 @@ export class AuthResolver {
   async logout(@Context() context: any): Promise<boolean> {
     const userId = context.req.user.userId;
     const token = context.req.headers.authorization?.replace('Bearer ', '');
+    const ip = context.req.ip || context.req.connection.remoteAddress;
 
-    await this.authService.logout(userId, token);
+    await this.authService.logout(userId, token, ip);
 
     context.res.clearCookie('refreshToken');
 

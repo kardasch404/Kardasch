@@ -3,6 +3,8 @@ import { UserService } from '../../user/services/user.service';
 import { PasswordService } from './password.service';
 import { TokenService } from './token.service';
 import { BruteForceService } from './brute-force.service';
+import { AuditLoggerService } from '../../../core/observability/audit-logger.service';
+import { AuditAction } from '../../../modules/logging/entities/audit-log.entity';
 import { RegisterDto } from '../dto/register.dto';
 import { LoginDto } from '../dto/login.dto';
 import { AuthResponseDto } from '../dto/auth-response.dto';
@@ -14,6 +16,7 @@ export class AuthService {
     private readonly passwordService: PasswordService,
     private readonly tokenService: TokenService,
     private readonly bruteForceService: BruteForceService,
+    private readonly auditLogger: AuditLoggerService,
   ) {}
 
   async register(dto: RegisterDto, deviceFingerprint: string): Promise<AuthResponseDto> {
@@ -40,6 +43,13 @@ export class AuthService {
       deviceFingerprint,
     );
 
+    await this.auditLogger.logAuth(AuditAction.REGISTER, {
+      userId: user.id,
+      username: user.username,
+      ip: 'unknown',
+      message: `User registered: ${user.email}`,
+    });
+
     return { accessToken, user };
   }
 
@@ -52,6 +62,11 @@ export class AuthService {
 
     if (!user) {
       await this.bruteForceService.recordFailedAttempt(dto.identifier, ip);
+      await this.auditLogger.logAuth(AuditAction.FAILED_LOGIN, {
+        username: dto.identifier,
+        ip,
+        message: 'Login failed: user not found',
+      });
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -61,6 +76,12 @@ export class AuthService {
     const isValid = await this.passwordService.verify(user.password, dto.password);
     if (!isValid) {
       await this.bruteForceService.recordFailedAttempt(user.email, ip);
+      await this.auditLogger.logAuth(AuditAction.FAILED_LOGIN, {
+        userId: user._id.toString(),
+        username: user.username,
+        ip,
+        message: 'Login failed: invalid password',
+      });
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -81,12 +102,26 @@ export class AuthService {
     // Reset attempts on successful login
     await this.bruteForceService.recordSuccessfulLogin(user.email, ip);
 
+    await this.auditLogger.logAuth(AuditAction.LOGIN, {
+      userId: user._id.toString(),
+      username: user.username,
+      ip,
+      message: `User logged in: ${user.email}`,
+    });
+
     return { accessToken, user: userResponse };
   }
 
-  async logout(userId: string, accessToken: string): Promise<boolean> {
+  async logout(userId: string, accessToken: string, ip: string): Promise<boolean> {
     await this.tokenService.blacklistAccessToken(accessToken);
     await this.tokenService.revokeAllUserTokens(userId);
+
+    await this.auditLogger.logAuth(AuditAction.LOGOUT, {
+      userId,
+      ip,
+      message: 'User logged out',
+    });
+
     return true;
   }
 }
