@@ -5,6 +5,8 @@ import type { Cache } from 'cache-manager';
 import { ProjectRepository } from '../repositories/project.repository';
 import { CreateProjectInput, UpdateProjectInput, SearchProjectInput } from '../dto/project.input';
 import { Project } from '../entities/project.entity';
+import { AuditLoggerService } from '../../../core/observability/audit-logger.service';
+import { AuditAction } from '../../../modules/logging/entities/audit-log.entity';
 
 @Injectable()
 export class ProjectService {
@@ -15,12 +17,21 @@ export class ProjectService {
     private projectRepository: ProjectRepository,
     private elasticsearchService: ElasticsearchService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private auditLogger: AuditLoggerService,
   ) {}
 
-  async create(input: CreateProjectInput): Promise<Project> {
+  async create(input: CreateProjectInput, userId?: string, ip?: string): Promise<Project> {
     const project = await this.projectRepository.create(input);
     await this.indexProject(project);
     await this.invalidateCache();
+    
+    await this.auditLogger.logDataAccess(AuditAction.CREATE, 'Project', {
+      userId,
+      resourceId: project.id,
+      ip: ip || 'unknown',
+      metadata: { title: project.title },
+    });
+    
     return project;
   }
 
@@ -36,23 +47,38 @@ export class ProjectService {
     return project;
   }
 
-  async update(id: string, input: UpdateProjectInput): Promise<Project> {
+  async update(id: string, input: UpdateProjectInput, userId?: string, ip?: string): Promise<Project> {
     const project = await this.projectRepository.update(id, input);
     if (!project) throw new NotFoundException('Project not found');
 
     await this.indexProject(project);
     await this.invalidateCache();
     await this.cacheManager.del(`project:${id}`);
+    
+    await this.auditLogger.logDataAccess(AuditAction.UPDATE, 'Project', {
+      userId,
+      resourceId: id,
+      ip: ip || 'unknown',
+      metadata: { changes: Object.keys(input) },
+    });
+    
     return project;
   }
 
-  async delete(id: string): Promise<boolean> {
+  async delete(id: string, userId?: string, ip?: string): Promise<boolean> {
     const deleted = await this.projectRepository.delete(id);
     if (!deleted) throw new NotFoundException('Project not found');
 
     await this.deleteFromIndex(id);
     await this.invalidateCache();
     await this.cacheManager.del(`project:${id}`);
+    
+    await this.auditLogger.logDataAccess(AuditAction.DELETE, 'Project', {
+      userId,
+      resourceId: id,
+      ip: ip || 'unknown',
+    });
+    
     return true;
   }
 

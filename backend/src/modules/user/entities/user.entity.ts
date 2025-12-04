@@ -86,7 +86,7 @@ UserSchema.methods.isActive = function () {
   return this.status === UserStatus.ACTIVE;
 };
 
-UserSchema.index({ email: 1 });
-UserSchema.index({ username: 1 });
+// Indexes for email and username are automatically created by unique: true
+// Only add additional indexes for non-unique fields
 UserSchema.index({ role: 1 });
 UserSchema.index({ status: 1 });
