@@ -63,11 +63,22 @@ describe('RateLimitGuard', () => {
 });
 
 function createMockContext(): ExecutionContext {
+  const mockRequest = {
+    ip: '127.0.0.1',
+    headers: {
+      'x-forwarded-for': '127.0.0.1',
+    },
+    user: undefined,
+  };
+
   return {
     getHandler: jest.fn(),
     getClass: jest.fn(),
-    getArgs: jest.fn(),
-    getArgByIndex: jest.fn(),
+    getArgs: jest.fn().mockReturnValue([null, null, { req: mockRequest }, null]),
+    getArgByIndex: jest.fn((index: number) => {
+      const args = [null, null, { req: mockRequest }, null];
+      return args[index];
+    }),
     switchToRpc: jest.fn(),
     switchToHttp: jest.fn(),
     switchToWs: jest.fn(),

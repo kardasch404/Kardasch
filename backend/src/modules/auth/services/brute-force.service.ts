@@ -2,8 +2,6 @@ import { Injectable, Inject, UnauthorizedException } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
 import { LoggerService } from '../../../core/observability/logger.service';
-import { AuditLoggerService } from '../../../core/observability/audit-logger.service';
-import { AuditAction } from '../../../modules/logging/entities/audit-log.entity';
 
 export interface BruteForceAttempt {
   count: number;
@@ -21,7 +19,6 @@ export class BruteForceService {
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private logger: LoggerService,
-    private auditLogger: AuditLoggerService,
   ) {}
 
   async recordFailedAttempt(identifier: string, ip: string): Promise<void> {
@@ -94,11 +91,7 @@ export class BruteForceService {
         `Account locked: ${identifier} after ${attempt.count} failed attempts`,
         'BruteForceService',
       );
-      await this.auditLogger.logSecurityEvent(AuditAction.ACCOUNT_LOCKED, {
-        username: identifier,
-        ip: 'system',
-        message: `Account locked after ${attempt.count} failed attempts`,
-      });
+      // TODO: Send email alert
     }
 
     await this.cacheManager.set(key, attempt, this.ACCOUNT_LOCK_DURATION);
@@ -122,10 +115,7 @@ export class BruteForceService {
         undefined,
         'BruteForceService',
       );
-      await this.auditLogger.logSecurityEvent(AuditAction.IP_BANNED, {
-        ip,
-        message: `IP banned after ${attempt.count} failed attempts`,
-      });
+      // TODO: Send email alert
     }
 
     await this.cacheManager.set(key, attempt, this.IP_BAN_DURATION);
